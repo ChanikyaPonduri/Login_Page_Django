@@ -7,12 +7,19 @@ def signup_view(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
+        confirm_password = request.POST['confirm_password']
+
+        if password != confirm_password:
+            return render(request, 'signup.html', {'error': 'Passwords do not match'})
+
         if User.objects.filter(username=username).exists():
             return render(request, 'signup.html', {'error': 'Username already exists'})
-        else:
-            User.objects.create_user(username=username, password=password)
-            return redirect('login')
+
+        User.objects.create_user(username=username, password=password)
+        return redirect('login')
+
     return render(request, 'signup.html')
+
 
 def login_view(request):
     if request.method == 'POST':
